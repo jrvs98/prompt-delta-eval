@@ -1,0 +1,69 @@
+# Envelope templates
+#
+# For each task "type", this defines exactly how the SAME underlying item
+# content gets wrapped for each condition. This is the entire independent
+# variable of the experiment — everything else (model, item content,
+# temperature, number of runs) is held constant across conditions.
+#
+#   bare       — the raw content, nothing added. This is "no prompt".
+#   minimal    — one plain-language instruction line, no role/format/examples.
+#   engineered — role framing + explicit instructions + output format spec
+#                (+ a worked example where it plausibly helps).
+#
+# {content} is replaced with the task item's `content` field verbatim.
+# Add your own task type here and reference it from a task YAML file's
+# `type:` field to define a new comparison.
+
+task_types:
+
+  math:
+    bare: "{content}"
+    minimal: "Solve this math problem: {content}"
+    engineered: |
+      You are a meticulous math tutor who double-checks every calculation
+      before answering.
+
+      Solve the following problem. Show your reasoning step by step, then
+      finish with your final answer alone on the last line, in exactly this
+      format:
+      Answer: <number>
+
+      Problem: {content}
+
+  classification:
+    bare: "{content}"
+    minimal: "Classify the sentiment of this text: {content}"
+    engineered: |
+      You are a sentiment classification system used in an automated
+      pipeline. Read the text below and respond with exactly one word:
+      "positive", "negative", or "neutral". Do not include punctuation,
+      explanation, or any other text.
+
+      Text: {content}
+
+  summarization:
+    bare: "{content}"
+    minimal: "Summarize this: {content}"
+    engineered: |
+      You are an editor producing summaries for a busy executive audience.
+      Summarize the text below in exactly 3 bullet points. Each bullet
+      should be one sentence, state a concrete fact from the text, and
+      avoid filler phrases like "this text discusses". Do not add a
+      preamble or closing remark — output only the 3 bullets.
+
+      Text:
+      {content}
+
+  extraction:
+    bare: "{content}"
+    minimal: "Extract the key fields from this as JSON: {content}"
+    engineered: |
+      You are a data extraction system feeding a downstream parser. Read
+      the text below and output a single valid JSON object (and nothing
+      else — no markdown fences, no commentary) with exactly these keys:
+      {schema_hint}
+
+      If a field isn't present in the text, use null for its value.
+
+      Text:
+      {content}

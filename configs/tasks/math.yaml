@@ -1,0 +1,38 @@
+id: math_word_problems
+type: math
+description: >
+  Short math word problems with a single numeric answer. Objective
+  scoring — no LLM judge needed, so this is a good low-noise task to
+  start with.
+
+eval:
+  method: numeric_tolerance
+  tolerance: 0.01
+
+format:
+  rule: none
+
+items:
+  - id: train_speed
+    content: "A train travels 60 miles in 1.5 hours. What is its average speed in miles per hour?"
+    expected: 40
+
+  - id: discount_price
+    content: "A jacket costs $80. It is discounted by 25%. What is the final price in dollars?"
+    expected: 60
+
+  - id: pool_fill
+    content: "Pipe A fills a pool in 6 hours. Pipe B fills the same pool in 3 hours. Working together, how many hours does it take to fill the pool?"
+    expected: 2
+
+  - id: compound_growth
+    content: "A population of 200 bacteria doubles every hour. How many bacteria are there after 3 hours?"
+    expected: 1600
+
+  - id: weighted_average
+    content: "A student scores 80 on a test worth 30% of the grade and 90 on a test worth 70% of the grade. What is the student's overall grade out of 100?"
+    expected: 87
+
+  - id: age_problem
+    content: "Sarah is twice as old as her brother. In 5 years, she will be 1.5 times as old as him. How old is Sarah now?"
+    expected: 10

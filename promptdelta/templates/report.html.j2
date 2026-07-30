@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ experiment_name }} — promptdelta report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EDEEF0;
+    --panel: #F6F7F8;
+    --ink: #1B1D22;
+    --muted: #6B7078;
+    --rule: #C9CCD1;
+    --positive: #1F6F6B;
+    --positive-soft: #DCEBE9;
+    --negative: #B5502D;
+    --negative-soft: #F3E1D8;
+    --highlight: #C98A2C;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 56px 28px 96px; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .subtitle { color: var(--muted); margin: 0 0 36px; max-width: 60ch; }
+  .hero {
+    display: flex;
+    gap: 40px;
+    align-items: flex-end;
+    padding: 28px 0 36px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .hero-stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--highlight);
+  }
+  .hero-stat .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 8px;
+    max-width: 26ch;
+  }
+  .meta-line {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  section { margin-bottom: 52px; }
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+  .section-note { color: var(--muted); font-size: 14px; margin: 0 0 20px; max-width: 68ch; }
+  .chart-panel {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 24px 20px 8px;
+  }
+  .legend {
+    display: flex;
+    gap: 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .legend span.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  th {
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 12px;
+  }
+  .pill.pos { background: var(--positive-soft); color: var(--positive); }
+  .pill.neg { background: var(--negative-soft); color: var(--negative); }
+  .task-block { margin-bottom: 28px; }
+  .task-block h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 2px;
+  }
+  .task-desc { color: var(--muted); font-size: 13px; margin: 0 0 12px; max-width: 68ch; }
+  footer {
+    border-top: 1px solid var(--rule);
+    margin-top: 60px;
+    padding-top: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  footer p { max-width: 72ch; }
+  a { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">promptdelta report</p>
+  <h1>{{ experiment_name }}</h1>
+  <p class="subtitle">Same task content, same models, different envelopes. This report compares
+    <strong>{{ baseline_condition }}</strong> against <strong>{{ compare_condition }}</strong> prompts
+    across {{ n_models }} model{{ 's' if n_models != 1 else '' }} and {{ n_tasks }} task{{ 's' if n_tasks != 1 else '' }}.</p>
+
+  <div class="hero">
+    <div class="hero-stat">
+      <div class="num">{{ headline_delta }}</div>
+      <div class="label">avg. score change,<br>{{ baseline_condition }} → {{ compare_condition }}<br>(scale 0–1, averaged across all models &amp; tasks)</div>
+    </div>
+    <div>
+      <div class="meta-line">runs per cell: {{ runs_per_cell }} · temperature: {{ temperature }}</div>
+      <div class="meta-line">conditions compared: {{ conditions|join(', ') }}</div>
+      <div class="meta-line">generated {{ generated_at }}</div>
+    </div>
+  </div>
+
+  <section>
+    <h2>The gap, per model</h2>
+    <p class="section-note">Each row is one model, averaged across all tasks. The hollow dot is the
+      {{ baseline_condition }}-prompt score; the filled dot is the {{ compare_condition }}-prompt score.
+      A long teal line means engineering the prompt mattered a lot for that model — a short or reversed
+      line means it barely moved the needle.</p>
+    <div class="chart-panel">
+      <div class="legend">
+        <span><span class="dot" style="background:var(--muted); opacity:0.5;"></span>{{ baseline_condition }}</span>
+        <span><span class="dot" style="background:var(--positive);"></span>{{ compare_condition }} (improved)</span>
+        <span><span class="dot" style="background:var(--negative);"></span>{{ compare_condition }} (no change / worse)</span>
+      </div>
+      {{ dumbbell_svg | safe }}
+    </div>
+  </section>
+
+  <section>
+    <h2>Per-task breakdown</h2>
+    <p class="section-note">Mean score (0–1) and format-compliance rate per condition, for each task
+      and model. Format compliance is checked independently of correctness — e.g. "did it output valid
+      JSON", not "was the JSON right".</p>
+    {% for task in task_blocks %}
+    <div class="task-block">
+      <h3>{{ task.id }}</h3>
+      <p class="task-desc">{{ task.description }}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            {% for c in conditions %}<th class="num">{{ c }} score</th>{% endfor %}
+            {% for c in conditions %}<th class="num">{{ c }} format ok</th>{% endfor %}
+            <th class="num">n / cell</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in task.rows %}
+          <tr>
+            <td>{{ row.model_label }}</td>
+            {% for c in conditions %}<td class="num">{{ row.scores.get(c, '—') }}</td>{% endfor %}
+            {% for c in conditions %}<td class="num">{{ row.format_rates.get(c, '—') }}</td>{% endfor %}
+            <td class="num">{{ row.n }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+  </section>
+
+  <footer>
+    <p>Read this with appropriate skepticism: small sample sizes per cell produce noisy means,
+      LLM-judge scoring (used for subjective tasks) has its own biases toward longer or more
+      confident-sounding answers, and envelope wording choices are subjective by construction.
+      Treat this as a starting point for your own investigation, not a final verdict.</p>
+    <p>Generated by <a href="https://github.com/">promptdelta</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>

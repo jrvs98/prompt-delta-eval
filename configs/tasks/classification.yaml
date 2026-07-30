@@ -1,0 +1,39 @@
+id: sentiment_classification
+type: classification
+description: >
+  Short sentiment classification. Objective scoring (exact match on
+  label), plus a format check for whether the model followed the
+  "one word only" instruction — this is where engineered prompts
+  often win even when raw accuracy doesn't move much.
+
+eval:
+  method: exact_match
+  normalize: true   # lowercase + strip before comparing
+
+format:
+  rule: one_word
+
+items:
+  - id: review_1
+    content: "The battery life on this laptop is incredible, easily lasts me a full workday."
+    expected: positive
+
+  - id: review_2
+    content: "Support never responded to my ticket and the app crashed twice during setup."
+    expected: negative
+
+  - id: review_3
+    content: "It's fine. Does what it says on the box, nothing more, nothing less."
+    expected: neutral
+
+  - id: review_4
+    content: "Honestly one of the best purchases I've made this year, exceeded every expectation."
+    expected: positive
+
+  - id: review_5
+    content: "The shipping took three weeks and the box arrived slightly dented, though the product itself works."
+    expected: neutral
+
+  - id: review_6
+    content: "Complete waste of money, broke after two days and customer service was rude about it."
+    expected: negative

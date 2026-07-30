@@ -1,0 +1,57 @@
+# Copy this to e.g. configs/my_experiment.yaml and adjust.
+#
+# IMPORTANT: model IDs change often. The ones below are placeholders —
+# check each provider's current docs before running:
+#   OpenAI:     https://platform.openai.com/docs/models
+#   Anthropic:  https://docs.claude.com/en/docs/about-claude/models
+#   Google:     https://ai.google.dev/gemini-api/docs/models
+#   Ollama:     `ollama list` (after `ollama pull <model>`)
+#
+# Set your API keys in a .env file (see .env.example) before running.
+
+experiment:
+  name: "prompt-envelope-comparison-2026"
+  runs_per_cell: 5          # more runs = less noisy means, but more $ / time
+  temperature: 0.7
+  conditions: [bare, minimal, engineered]
+
+  models:
+    # generation_rank is optional — set it (e.g. by rough release order)
+    # if you want the report to reflect "does the gap shrink over model
+    # generations" rather than just "which model is bigger".
+    - provider: anthropic
+      model: claude-sonnet-5          # verify current model ID
+      label: "Claude Sonnet 5"
+      generation_rank: 5
+
+    - provider: openai
+      model: gpt-4o-mini              # verify current model ID
+      label: "GPT-4o mini"
+      generation_rank: 4
+
+    - provider: google
+      model: gemini-1.5-flash         # verify current model ID
+      label: "Gemini 1.5 Flash"
+      generation_rank: 3
+
+    - provider: ollama
+      model: llama3.1                 # requires `ollama pull llama3.1`
+      label: "Llama 3.1 (local)"
+      generation_rank: 2
+
+  tasks:
+    - configs/tasks/math.yaml
+    - configs/tasks/classification.yaml
+    - configs/tasks/summarization.yaml
+    - configs/tasks/extraction.yaml
+
+  # Required because summarization.yaml uses eval.method: llm_judge.
+  # Pick a model you trust to score consistently — doesn't have to be
+  # one of the models under test.
+  judge:
+    provider: anthropic
+    model: claude-sonnet-5            # verify current model ID
+
+  output:
+    db_path: results/results.db
+    report_path: results/report.html

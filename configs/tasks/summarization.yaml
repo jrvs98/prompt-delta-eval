@@ -1,0 +1,55 @@
+id: summarization
+type: summarization
+description: >
+  Short passages to summarize. Subjective — scored by an LLM judge
+  against a rubric, plus a format check for "exactly 3 bullet points".
+  This task type is where you'd expect the biggest gap between bare
+  and engineered prompts, since "good summary" is underspecified
+  without instructions.
+
+eval:
+  method: llm_judge
+  rubric: >
+    Score this summary from 1-5 on how well it captures the key facts
+    of the source text concisely, without inventing information not
+    present in the source. 5 = concise, accurate, no fluff or invented
+    detail. 1 = missing key facts, inaccurate, or padded with filler.
+
+format:
+  rule: bullet_count
+  count: 3
+
+items:
+  - id: passage_1
+    content: >
+      The city council voted 5-2 on Tuesday to approve a $12 million
+      budget for repaving 40 miles of residential roads over the next
+      two years. The project will be funded through a combination of
+      state infrastructure grants and a small increase in the local
+      vehicle registration fee. Construction is expected to begin in
+      March, starting with the neighborhoods reporting the most
+      potholes in this year's survey. Two council members voted against
+      the plan, citing concerns that the fee increase would
+      disproportionately affect lower-income residents.
+
+  - id: passage_2
+    content: >
+      Researchers at a university lab announced they had developed a
+      new battery coating that reduced charging time for lithium-ion
+      batteries by roughly 40% in lab tests, without a measurable drop
+      in the battery's total lifespan after 500 charge cycles. The
+      coating uses a cheap, widely available polymer, which the team
+      says could make it practical to manufacture at scale. The
+      research has not yet been peer reviewed, and the team cautioned
+      that lab conditions don't always translate directly to
+      commercial battery packs.
+
+  - id: passage_3
+    content: >
+      A mid-sized regional airline announced it will cut 15% of its
+      routes starting next quarter, citing rising fuel costs and lower
+      than expected demand on routes added during its post-pandemic
+      expansion. The airline said it would not lay off flight crew,
+      instead reassigning staff to its remaining routes and increasing
+      frequency on its five most profitable routes. Shares of the
+      airline's parent company rose 4% following the announcement.

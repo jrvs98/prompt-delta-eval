@@ -1,0 +1,28 @@
+id: field_extraction
+type: extraction
+description: >
+  Extract structured fields from short unstructured text into JSON.
+  This is the classic "does it even follow the format" task — many
+  pipelines depend on this working without a schema-enforcing API
+  feature, so it's a good stand-in for real integration use cases.
+
+eval:
+  method: json_schema
+  required_keys: [name, date, amount]
+
+format:
+  rule: json
+
+# Filled into the {schema_hint} placeholder in the "extraction" engineered
+# envelope template.
+schema_hint: "name (string), date (ISO 8601 string), amount (number, no currency symbol)"
+
+items:
+  - id: invoice_1
+    content: "Invoice #4471 — Billed to Marcus Webb on 2024-03-14 for a total of $245.00."
+
+  - id: invoice_2
+    content: "Payment received from Ana Torres, dated 03/02/2024, amount: 89.99 USD."
+
+  - id: invoice_3
+    content: "Receipt: Jordan Lee paid 1,200.50 on the 5th of June, 2024."

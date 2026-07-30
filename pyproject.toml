@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promptdelta"
+version = "0.1.0"
+description = "Measure whether prompt engineering still moves the needle, across models and task types."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.40"]
+anthropic = ["anthropic>=0.40"]
+google = ["google-generativeai>=0.8"]
+ollama = ["requests>=2.31"]
+dotenv = ["python-dotenv>=1.0"]
+all = [
+    "openai>=1.40",
+    "anthropic>=0.40",
+    "google-generativeai>=0.8",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+promptdelta = "promptdelta.cli:main"
+
+[tool.setuptools]
+packages = ["promptdelta", "promptdelta.providers", "promptdelta.eval"]
+
+[tool.setuptools.package-data]
+promptdelta = ["templates/*.j2"]
