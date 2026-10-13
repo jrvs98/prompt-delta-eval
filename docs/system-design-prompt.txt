@@ -1,0 +1,21 @@
+Create a polished, highly legible system architecture infographic for the actual Python repository "promptdelta". Landscape 16:10, high resolution, white/light slate background, dark navy typography, teal and blue workflow boxes, orange decision accents. Professional engineering document, precise clean arrows, spacious alignment, no decorative robots or fake dashboards. Title: "promptdelta — System Design". Subtitle: "Measure how prompt engineering changes model performance". It should explain the full working system and important design decisions. Use exactly the supported architecture below, no invented services, queues, cloud hosting, frontend app, or concurrency.
+
+LAYOUT: upper 65% is the architecture flow with numbered stages and directional arrows; lower 35% is a compact 2-row grid of 6 design-decision cards. Use clear readable text, avoid excessive small text.
+
+FLOW:
+1. "Configure" box at upper left: "Experiment YAML" / "Models • conditions • repeats • generation settings". Below it input cards "Task YAML" with "Math • classification • summarization • extraction" and "Envelope YAML" with "Templates by task type". These input cards feed stage 2.
+2. "Render prompts" box with three adjacent small cards "Bare: raw content", "Minimal: one instruction", "Engineered: role + instructions + format". Caption "Same task content in every condition". Task expected answers and rubric feed scoring ONLY, not candidate prompts. Show a small arrow or side line labeled "Expected answers / rubric" from Task YAML to stage 4.
+3. "Run experiment" central box, "Sequential loop" and "model × item × condition × repeat". Under it an adapter group titled "Common provider interface" with "complete(prompt, temperature, max_tokens)" and provider chips "OpenAI", "Anthropic", "Google", "Ollama", "Mock". Bidirectional request/response connection between runner and adapters, adapters return "Text • latency • error". Main flow advances from runner to stage 4 with arrow "Model output".
+4. "Evaluate" box split into "Content score (0–1)" and "Format compliance". Content scorer text "Objective checks OR rubric-based LLM judge"; format text "JSON • one word • bullets • word limit". Small auxiliary box "Configured judge provider" connects to content scoring and caption "Subjective tasks only". Do not show judge as always running. Show runner error path bypasses evaluation toward storage labeled "Provider errors".
+5. "Persist" SQLite cylinder, "One row per model / item / condition / run" and "Prompt • output • scores • latency • errors". 
+6. "Analyze & report" box: "Means • variability • format rate", "Score deltas • Cohen’s d", then final document icon "Self-contained HTML report" / "Offline SVG charts + tables". Clear arrow SQLite -> analysis -> report. Include a thin secondary path "report command: rebuild from SQLite without new model calls". Compact note "Failed model calls are stored; excluded from score averages." Place it near persistence/analysis.
+
+SIX DECISION CARDS in lower panel titled "Key decisions and why":
+1 "Control the independent variable" — "Only the prompt envelope changes; task content stays fixed."
+2 "No hidden system prompt" — "All conditions use a single user prompt for a fair baseline."
+3 "Repeat each experiment cell" — "Repeated runs expose variability in model outputs."
+4 "Score content and format separately" — "A correct answer can still have the wrong structure."
+5 "SQLite + offline HTML" — "Queryable raw evidence; reports can be rebuilt without API calls."
+6 "Small provider abstraction" — "Swap backends; optional SDKs and Mock support offline testing."
+
+Small footer: "Current implementation • Python CLI • YAML configuration • SQLite storage". Use an easily readable diagram, sharp text, exact labels, clean arrows with no crossings where possible. Architecture is a local sequential experiment pipeline, not a distributed production service. 
